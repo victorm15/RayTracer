@@ -3,6 +3,7 @@
 #include "color.h"
 #include "vec3.h"
 #include "ray.h"
+#include "hittable.h"
 
 double hit_sphere(const vec3& sphere_loc, const double& sphere_radius, const ray& r) {
 
@@ -30,19 +31,17 @@ double hit_sphere(const vec3& sphere_loc, const double& sphere_radius, const ray
 
 
 
-color ray_color(const ray& r, const vec3& sphere_loc, const double& sphere_radius) {
+color ray_color(const ray& r, const point3& sphere_loc, const double& sphere_radius) {
 
-    auto t = hit_sphere(sphere_loc,sphere_radius,r);
+    hit_record rec;
+    sphere sph1(sphere_loc,sphere_radius);
 
-    if (t>=0.0) {
-        auto N = unit_vector(r.at(t) - sphere_loc);
+    if (sph1.hit(r, 0, 100, rec)) {
+        auto N = rec.normal;
         return 0.5*color(N.x()+1, N.y()+1, N.z()+1);
-
     }
 
-
-
-
+    // Gradient
     vec3 unit_direction = unit_vector(r.direction());
     auto a = 0.5*(unit_direction.y() + 1.0);
     return (1.0-a)*color(1.0, 1.0, 1.0) + a*color(0.5, 0.7, 1.0);
@@ -84,19 +83,20 @@ int main() {
         auto pixel00_loc = viewport_top_left + vec3(0.5 * pixel_delta_u, -0.5 * pixel_delta_v, 0);
 
         // Sphere
-            auto sphere_loc = vec3(0,0,-1);
-            auto sphere_radius = 0.5;
+        auto sphere_loc = vec3(0,0,-1);
+        auto sphere_radius = 0.5;
 
 
         // Render
         std::cout << "P3\n" << image_width << " " << image_height << "\n255\n";
         for (int j = 0; j < image_height; j++) {
-            std::clog << "Row: " << j << "/255\n";
+            // std::clog << "Row: " << j << "/255\n";
             for (int i = 0; i < image_width; i++) {
                 auto pixel_loc = pixel00_loc + vec3(i * pixel_delta_u, -j * pixel_delta_v, 0);
                 auto ray_direction = pixel_loc - camera_center;
 
                 ray r(camera_center,ray_direction);
+
 
                 color pixel_color = ray_color(r, sphere_loc, sphere_radius);
                 write_color(std::cout, pixel_color);
