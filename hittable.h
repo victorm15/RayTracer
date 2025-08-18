@@ -13,6 +13,17 @@ public:
     point3 p;
     vec3 normal;
     double t;
+    bool front_face;
+
+    void set_face_normal(const ray& r) {
+        if (dot(normal,r.direction()) > 0) {
+            front_face = false;
+            normal = - normal;
+        }
+        else {
+            front_face = true;
+        }
+    }
 };
 
 
@@ -43,24 +54,34 @@ public:
 
         auto a = dir.length_squared();
         auto b = dot((2 * dir),(orig - sphere_loc));
-        auto c = sphere_loc.length_squared() + orig.length_squared() -2 * dot(sphere_loc,orig) - sphere_radius*sphere_radius;
+        auto c = sphere_loc.length_squared() + orig.length_squared() - (2 * dot(sphere_loc,orig)) - (sphere_radius*sphere_radius);
 
         auto discriminant = b * b - 4 * a * c;
 
         // Check if ray touches sphere
-        if (discriminant < 0) {return false;}
-
-        // Update hit_record
-        // if (t_min <= (-b - std::sqrt(discriminant) / (2a)) && )
-        rec.t = (-b - std::sqrt(discriminant)) / (2 * a);
-        // std::clog << rec.t <<"\n";
-        rec.p = r.at(rec.t);
-        if (rec.p.z()>=-1){std::clog << rec.p.z();}
-        rec.normal = unit_vector(rec.p - sphere_loc);
-
-
-        return true;
-
+        if (discriminant < 0) {
+            return false;
+        }
+        auto t = (-b - std::sqrt(discriminant)) / (2 * a);
+        if (t_min <= t && t <= t_max) {
+            rec.t = t;
+            rec.p = r.at(rec.t);
+            rec.normal = unit_vector(rec.p - sphere_loc);
+            rec.set_face_normal(r);
+            return true;
+        }
+        if (t_max <= t) {
+            return false;
+        }
+        t = (-b + std::sqrt(discriminant)) / (2 * a);
+        if (t_min <= t && t <= t_max) {
+            rec.t = t;
+            rec.p = r.at(rec.t);
+            rec.normal = unit_vector(rec.p - sphere_loc);
+            rec.set_face_normal(r);
+            return true;
+        }
+        return false;
 
     }
 private:
