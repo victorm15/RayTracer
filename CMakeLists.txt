@@ -12,4 +12,6 @@ add_executable(RayTracer main.cpp
         interval.h
         utility.h
         sphere.h
-        camera.h)
+        camera.h
+        cube.h
+        material.h)

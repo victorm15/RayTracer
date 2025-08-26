@@ -9,7 +9,7 @@ class sphere: public hittable {
 public:
 
 
-
+    // Constructor
     sphere(const point3& sphere_loc, double sphere_radius):
     sphere_loc(sphere_loc), sphere_radius(std::fmax(0,sphere_radius)) {}
 
@@ -30,7 +30,7 @@ public:
             return false;
         }
         auto t = (-b - std::sqrt(discriminant)) / (2 * a);
-        if (ray_t.contains(t)) {
+        if (ray_t.surrounds(t)) {
             rec.t = t;
             rec.p = r.at(rec.t);
             rec.normal = unit_vector(rec.p - sphere_loc);
@@ -41,7 +41,7 @@ public:
             return false;
         }
         t = (-b + std::sqrt(discriminant)) / (2 * a);
-        if (ray_t.min <= t && t <= ray_t.max) {
+        if (ray_t.surrounds(t)) {
             rec.t = t;
             rec.p = r.at(rec.t);
             rec.normal = unit_vector(rec.p - sphere_loc);

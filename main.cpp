@@ -24,12 +24,23 @@ int main() {
 
     // Camera settings
     camera cam;
-    cam.aspect_ratio = 16.0 / 9.0;
     cam.image_width = 400;
+    cam.aspect_ratio = 16.0 / 9.0;
+    cam.antialising = true;
+    cam.antialiasing_samples = 100;
+    cam.max_depth = 10;
 
+    // Render
     cam.render(world);
 
 
     return 0;
 }
 
+/*
+Let's make cubes as hittable objects, take a center point, and if the distance between a point and the center
+(x,y,z) is where x,y,z <= 1, then it falls within the cube
+i.e. instead of the distance being within a number it is the x,y,z components of the distance vector that must
+fall within the range
+reflection of rays must also change where it is a perfect reflection (\theta_i = \theta_r)
+*/

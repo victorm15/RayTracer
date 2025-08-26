@@ -23,6 +23,13 @@ public:
 
         double z() const { return e[2]; }
 
+        // Generate random vectors
+
+        static vec3 random_vec() { return vec3(random_double(),random_double(),random_double()); }
+        static vec3 random_vec(double min, double max) { return vec3(random_double(min,max),
+                random_double(min,max),random_double(min,max)); }
+
+
         // special operators
         vec3 operator-() const {return vec3(-e[0], -e[1], -e[2]); }
 
@@ -110,6 +117,21 @@ inline vec3 cross(const vec3& u, const vec3& v) {
 
 inline vec3 unit_vector(const vec3& v) {
         return v / v.length();
+}
+inline vec3 random_unit_vec() {
+        while (true) {
+                vec3 vec = vec3::random_vec(-1,1);
+                auto lensq = vec.length_squared();
+                if (1e-160 < lensq && lensq <= 1) {
+                        return vec / sqrt(lensq);
+                }
+        }
+}
+inline vec3 random_on_hemisphere(const vec3& normal) {
+        vec3 vec = random_unit_vec();
+        if (dot(normal,vec)>0) return vec;
+        return -vec;
+
 }
 
 

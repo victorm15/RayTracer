@@ -22,6 +22,9 @@ public:
 
     double aspect_ratio = 1.0;
     int image_width = 100;
+    bool antialising = true;
+    int antialiasing_samples = 1;
+    int max_depth = 10;
 
 
 
@@ -35,12 +38,30 @@ public:
                 std::clog << "Row: " << j << "/" << image_height-1 << "\n";
                 for (int i = 0; i < image_width; i++) {
                     auto pixel_loc = pixel00_loc + (i * pixel_delta_u) + (j * pixel_delta_v);
-                    auto ray_direction = pixel_loc - camera_center;
 
-                    ray r(camera_center,ray_direction);
+                    color pixel_color;
+                    if (antialising) {
+                        color sum = color(0,0,0);
 
+                        for (int i = 0; i < antialiasing_samples; i++) {
 
-                    color pixel_color = ray_color(r,world);
+                            auto ray_target = pixel_loc + random_double(-1,1) * pixel_delta_u/2 +
+                                random_double(-1,1) * pixel_delta_v/2;
+
+                            auto ray_direction = ray_target - camera_center;
+
+                            ray r(camera_center,ray_direction);
+                            sum += ray_color(r,world, max_depth);
+                        }
+
+                        pixel_color = sum / antialiasing_samples;
+                    }
+                    else {
+                        auto ray_direction = pixel_loc - camera_center;
+                        ray r(camera_center,ray_direction);
+                        pixel_color = ray_color(r,world, max_depth);
+                    }
+
                     write_color(std::cout, pixel_color);
                 }
             }
@@ -99,21 +120,26 @@ private:
 
     }
 
-    color ray_color(const ray& r, const hittable& world) const {
+    color ray_color(const ray& r, const hittable& world, int depth) const {
 
         hit_record rec;
 
         // Check if ray intersects with hittable objects
-        if (world.hit(r, interval(0,infinity), rec)) {
-            auto N = rec.normal;
-            return 0.5*color(N.x()+1, N.y()+1, N.z()+1);
+        if (depth <= 0) return color(0,0,0);
+        if (world.hit(r, interval(0.001,infinity), rec)) {
+            auto normal = rec.normal;
+            vec3 direction = normal + random_unit_vec();
+
+            ray bounced_ray(rec.p,direction);
+            // return 0.5*color(normal.x()+1, normal.y()+1, normal.z()+1);
+            return 0.5 * ray_color(bounced_ray,world, depth-1);
+
         }
 
         // Create gradient
         vec3 unit_direction = unit_vector(r.direction());
         auto a = 0.5*(unit_direction.y() + 1.0);
         return (1.0-a)*color(1.0, 1.0, 1.0) + a*color(0.5, 0.7, 1.0);
-
 
     }
 
