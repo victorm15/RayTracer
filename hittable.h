@@ -8,12 +8,15 @@
 
 #include "utility.h"
 
+class material;
+
 class hit_record {
 public:
     point3 p;
     vec3 normal;
     double t;
     bool front_face;
+    shared_ptr<material> mat;
 
     void set_face_normal(const ray& r) {
         if (dot(normal,r.direction()) > 0) {

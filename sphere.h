@@ -5,14 +5,17 @@
 #ifndef SPHERE_H
 #define SPHERE_H
 
+using std::shared_ptr;
+
 class sphere: public hittable {
 public:
 
 
     // Constructor
-    sphere(const point3& sphere_loc, double sphere_radius):
-    sphere_loc(sphere_loc), sphere_radius(std::fmax(0,sphere_radius)) {}
+    sphere(const point3& sphere_loc, double sphere_radius, shared_ptr<material> mat):
+    sphere_loc(sphere_loc), sphere_radius(std::fmax(0,sphere_radius)), mat(mat) {}
 
+    // Hit function
     bool hit(const ray& r, interval ray_t, hit_record& rec) const override {
 
 
@@ -35,6 +38,7 @@ public:
             rec.p = r.at(rec.t);
             rec.normal = unit_vector(rec.p - sphere_loc);
             rec.set_face_normal(r);
+            rec.mat = mat;
             return true;
         }
         if (ray_t.max <= t) {
@@ -46,6 +50,7 @@ public:
             rec.p = r.at(rec.t);
             rec.normal = unit_vector(rec.p - sphere_loc);
             rec.set_face_normal(r);
+            rec.mat = mat;
             return true;
         }
         return false;
@@ -54,6 +59,7 @@ public:
 private:
     point3 sphere_loc;
     double sphere_radius;
+    shared_ptr<material> mat;
 
 
 

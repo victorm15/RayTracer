@@ -29,6 +29,10 @@ public:
         static vec3 random_vec(double min, double max) { return vec3(random_double(min,max),
                 random_double(min,max),random_double(min,max)); }
 
+        bool near_zero() const {
+                auto s = 1e-8;
+                return ( (std::fabs(e[0]) < s) && (std::fabs(e[0]) < s) && (std::fabs(e[0]) < s));
+        }
 
         // special operators
         vec3 operator-() const {return vec3(-e[0], -e[1], -e[2]); }
@@ -135,6 +139,21 @@ inline vec3 random_on_hemisphere(const vec3& normal) {
 }
 
 
+
+inline vec3 reflect(const vec3& normal, const vec3& v) {
+        return v - 2 * (normal * (dot(normal,v)));
+
+
+}
+
+inline vec3 refract(double eta_i_over_eta_r, const vec3& normal, const vec3& v) {
+        double cos_theta = std::fmin(dot(-v,normal),1);
+        vec3 R_perpendicular = eta_i_over_eta_r * (v + v.length() * cos_theta * normal);
+        vec3 R_parallel = - std::sqrt(std::fabs(1 - R_perpendicular.length_squared())) * normal;
+        return R_perpendicular + R_parallel;
+
+
+}
 
 
 
