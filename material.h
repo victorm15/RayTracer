@@ -50,11 +50,11 @@ public:
     bool scatter(const ray& r_in, const hit_record& rec, color& attenuation, ray& scattered) const override {
 
 
+
         auto scatter_direction = reflect(rec.normal, r_in.direction());
 
         scattered = ray(rec.p, unit_vector(scatter_direction) + (fuzz * random_unit_vec()));
         attenuation = albedo;
-
         return (dot(rec.normal,scattered.direction())>0);
     }
 

@@ -17,18 +17,29 @@ public:
     // Constructors
     interval(): min(-infinity), max(+infinity) {}
 
-    interval(double min, double max): min(min), max(max) {}
+    interval(double a, double b) {
+        double min = std::fmin(a,b);
+        double max = std::fmax(a,b);
 
+        this->min = min;
+        this->max = max;
+
+    }
+
+    interval(const interval& a, const interval& b) {
+
+
+    }
 
     double size() const {
         return max - min;
     }
 
-    bool contains(double x) {
+    bool contains(double x) const {
         return ((min <= x) && (x <= max));
     }
 
-    bool surrounds(double x) {
+    bool surrounds(double x) const {
         return ((min < x) && (x < max));
     }
 
@@ -40,6 +51,28 @@ public:
 
     static const interval empty, universe;
 
+    static bool intersects(const interval a, const interval b, interval& intersection) {
+        if (b.contains(a.min)) {
+            if (b.contains(a.max)) {
+                intersection = a;
+                return true;
+            }
+            intersection = interval(a.min,b.max);
+            return true;
+        }
+        if (b.contains(a.max)) {
+            intersection = interval(b.min, a.max);
+            return true;
+        }
+        if (a.contains(b.min)) {
+            intersection = b;
+            return true;
+        }
+
+        return false;
+
+    }
+
 
 
 
@@ -48,5 +81,8 @@ public:
 const interval interval::empty = interval(+infinity,-infinity);
 const interval interval::universe = interval(-infinity,+infinity);
 
+inline std::ostream& operator<<(std::ostream& out, const interval& r) {
+    return out << "Min: " << r.min << " Max: " << r.max;
+}
 
 #endif //INTERVAL_H

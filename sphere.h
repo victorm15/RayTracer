@@ -13,10 +13,16 @@ public:
 
     // Constructor
     sphere(const point3& sphere_loc, double sphere_radius, shared_ptr<material> mat):
-    sphere_loc(sphere_loc), sphere_radius(std::fmax(0,sphere_radius)), mat(mat) {}
+    sphere_loc(sphere_loc), sphere_radius(std::fmax(0,sphere_radius)), mat(mat) {
+        vec3 rvec = vec3(sphere_radius, sphere_radius, sphere_radius);
+        bbox = aabb(sphere_loc - rvec, sphere_loc + rvec);
+    }
 
     // Hit function
+
+
     bool hit(const ray& r, interval ray_t, hit_record& rec) const override {
+
 
 
         auto dir = r.direction();
@@ -56,10 +62,15 @@ public:
         return false;
 
     }
+    aabb bounding_box() const override {
+        return bbox;
+    }
+
 private:
     point3 sphere_loc;
     double sphere_radius;
     shared_ptr<material> mat;
+    aabb bbox;
 
 
 

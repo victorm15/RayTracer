@@ -161,13 +161,13 @@ private:
 
 
 
-        // Check if ray intersects with hittable objects
-        if (depth <= 0) return color(0,0,0);
+        if (depth <= 0) return color(1,0,0);
 
         hit_record rec;
 
 
         if (world.hit(r, interval(0.001,infinity), rec)) {
+
 
             // // return 0.5*color(normal.x()+1, normal.y()+1, normal.z()+1);
 
