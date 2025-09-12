@@ -74,19 +74,24 @@ public:
 
         double ri = rec.front_face ? 1/refractive_index : refractive_index;
 
-        auto cos_theta = std::fmin(dot(rec.normal,-unit_vector(r_in.direction())),1);
+        auto cos_theta = std::fmin(dot(rec.normal,-unit_vector(r_in.direction())),1.0);
         auto sin_theta = std::sqrt(std::fabs(1 - cos_theta * cos_theta));
 
-        vec3 scatter_direction = (((ri * sin_theta) > 1) ||
-            reflectance(cos_theta, refractive_index) > random_double()) ?
+        vec3 scatter_direction = (((ri * sin_theta) > 1) || reflectance(cos_theta, refractive_index) > random_double())  ?
         reflect(rec.normal, r_in.direction()) :
         refract(ri, rec.normal, unit_vector(r_in.direction()));
 
-        scattered = ray(rec.p,scatter_direction);
+        // vec3 scatter_direction = refract(ri, rec.normal, unit_vector(r_in.direction()));
+
+        scattered = ray(rec.p, scatter_direction);
+
+
+
+
 
         return true;
 
-
+        // || reflectance(cos_theta, refractive_index) > random_double()
     }
 
 

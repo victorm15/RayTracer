@@ -32,7 +32,7 @@ public:
         z  = interval(a.z,b.z);
     }
 
-    bool hit(const ray&r, interval ray_t) {
+    bool hit(const ray&r, interval ray_t) const {
 
         vec3 dir = r.direction();
 
@@ -74,14 +74,27 @@ public:
     }
 
 
+    int larget_axis() {
+        if ((x.max - x.min) > (y.max - y.min)) {
+            if ((x.max - x.min) > (z.max - z.min)) {
+                return 0;
+            }
+            return 2;
+        }
+        if ((y.max - y.min) > (z.max - z.min)) return 1;
+        return 2;
+    }
 
 
 
 
 
+    static const aabb empty, universe;
 
 };
 
+const aabb aabb::empty = aabb(interval::empty, interval::empty, interval::empty);
+const aabb aabb::universe = aabb(interval::universe, interval::universe, interval::universe);
 
 
 

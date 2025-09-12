@@ -5,6 +5,7 @@
 #ifndef CAMERA_H
 #define CAMERA_H
 #include <iostream>
+#include <thread>
 
 #include "hittable.h"
 #include "utility.h"
@@ -41,41 +42,32 @@ public:
         if (std::freopen("image.ppm", "w", stdout)) {
             // Render
             std::cout << "P3\n" << image_width << " " << image_height << "\n255\n";
-            for (int j = 0; j < image_height; j++) {
-                std::clog << "Row: " << j << "/" << image_height-1 << "\n";
-                for (int i = 0; i < image_width; i++) {
-                    auto pixel_loc = pixel00_loc + (i * pixel_delta_u) + (j * pixel_delta_v);
 
-                    color pixel_color;
-                    if (antialising) {
-                        color sum = color(0,0,0);
+            int thread_number = std::thread::hardware_concurrency();
+            for (int j = 0; j < image_height; j += thread_number) {
 
-                        for (int i = 0; i < antialiasing_samples; i++) {
 
-                            auto ray_target = pixel_loc + random_double(-1,1) * pixel_delta_u/2 +
-                                random_double(-1,1) * pixel_delta_v/2;
+                std::vector<std::thread> threads;
+                std::vector<std::vector<color>> rows(thread_number, std::vector<color>(image_width));
+                int c = 0;
 
-                            auto ray_origin = (defocus_angle > 0) ?
-                            camera_center + random_double(-1,1) * (defocus_disk_u + defocus_disk_v) : camera_center;
+                while (c != thread_number && j + c < image_height) {
+                        std::clog << "Row: " << j + c << "/" << image_height-1 << "\n";
+                        threads.emplace_back(&camera::prerender_row, this, j + c, std::cref(world),std::ref(rows[c]));
 
-                            auto ray_direction = ray_target - ray_origin;
-
-                            ray r(ray_origin,ray_direction);
-                            sum += ray_color(r,world, max_depth);
-                        }
-
-                        pixel_color = sum / antialiasing_samples;
-                    }
-                    else {
-                        auto ray_origin = (defocus_angle > 0) ?
-                        camera_center + random_double(-1,1) * (defocus_disk_u + defocus_disk_v) : camera_center;
-                        auto ray_direction = pixel_loc - ray_origin;
-                        ray r(ray_origin,ray_direction);
-                        pixel_color = ray_color(r,world, max_depth);
-                    }
-
-                    write_color(std::cout, pixel_color);
+                        c++;
                 }
+
+                for (std::thread &th : threads) th.join();
+                threads.clear();
+                for (int i = 0; i < c; i ++)  write_row(std::cout, rows[i]);
+
+                // std::vector<color> row(image_width);
+                //
+                // prerender_row(j,world,row);
+                //
+                // write_row(std::cout, row);
+
             }
             std::clog << "Done\n";
 
@@ -152,10 +144,7 @@ private:
 
     }
 
-    ray get_ray() const {
 
-
-    }
 
     color ray_color(const ray& r, const hittable& world, int depth) const {
 
@@ -190,6 +179,78 @@ private:
         vec3 unit_direction = unit_vector(r.direction());
         auto a = 0.5*(unit_direction.y() + 1.0);
         return (1.0-a)*color(1.0, 1.0, 1.0) + a*color(0.5, 0.7, 1.0);
+
+    }
+
+    void prerender_pixel(int j, int i, const hittable& world, color& pixel_color) {
+        auto pixel_loc = pixel00_loc + (i * pixel_delta_u) + (j * pixel_delta_v);
+
+        if (antialising) {
+            color sum = color(0,0,0);
+
+            for (int i = 0; i < antialiasing_samples; i++) {
+
+                auto ray_target = pixel_loc + random_double(-1,1) * pixel_delta_u/2 +
+                    random_double(-1,1) * pixel_delta_v/2;
+
+                auto ray_origin = (defocus_angle > 0) ?
+                camera_center + random_double(-1,1) * (defocus_disk_u + defocus_disk_v) : camera_center;
+
+                auto ray_direction = ray_target - ray_origin;
+
+                ray r(ray_origin,ray_direction);
+                sum += ray_color(r,world, max_depth);
+            }
+
+            pixel_color = sum / antialiasing_samples;
+        }
+        else {
+            auto ray_origin = (defocus_angle > 0) ?
+            camera_center + random_double(-1,1) * (defocus_disk_u + defocus_disk_v) : camera_center;
+            auto ray_direction = pixel_loc - ray_origin;
+            ray r(ray_origin,ray_direction);
+            pixel_color = ray_color(r,world, max_depth);
+        }
+
+
+
+
+    }
+
+    void prerender_row(int j, const hittable& world, std::vector<color>& row) {
+
+        for (int i = 0; i < image_width; i ++) {
+            auto pixel_loc = pixel00_loc + (i * pixel_delta_u) + (j * pixel_delta_v);
+
+            if (antialising) {
+                color sum = color(0,0,0);
+
+                for (int i = 0; i < antialiasing_samples; i++) {
+
+                    auto ray_target = pixel_loc + random_double(-1,1) * pixel_delta_u/2 +
+                        random_double(-1,1) * pixel_delta_v/2;
+
+                    auto ray_origin = (defocus_angle > 0) ?
+                    camera_center + random_double(-1,1) * (defocus_disk_u + defocus_disk_v) : camera_center;
+
+                    auto ray_direction = ray_target - ray_origin;
+
+                    ray r(ray_origin,ray_direction);
+                    sum += ray_color(r,world, max_depth);
+                }
+
+                row[i] = sum / antialiasing_samples;
+            }
+            else {
+                auto ray_origin = (defocus_angle > 0) ?
+                camera_center + random_double(-1,1) * (defocus_disk_u + defocus_disk_v) : camera_center;
+                auto ray_direction = pixel_loc - ray_origin;
+                ray r(ray_origin,ray_direction);
+                row[i] = ray_color(r,world, max_depth);
+            }
+
+        }
+
 
     }
 

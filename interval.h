@@ -28,6 +28,8 @@ public:
 
     interval(const interval& a, const interval& b) {
 
+        this->min = std::fmin(a.min,b.min);
+        this->max = std::fmax(a.max,b.max);
 
     }
 

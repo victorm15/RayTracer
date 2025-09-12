@@ -38,6 +38,11 @@ void write_color(std::ostream& out, const color& pixel_color) {
 
 }
 
+void write_row(std::ostream& out, const std::vector<color>& row) {
+    for (auto& px : row) write_color(out, px);
+
+}
+
 
 
 #endif //COLOR_H

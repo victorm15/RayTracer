@@ -23,6 +23,7 @@ public:
         if (dot(normal,r.direction()) > 0) {
             front_face = false;
             normal = - normal;
+
         }
         else {
             front_face = true;

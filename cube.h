@@ -17,7 +17,10 @@ public:
     x(interval(cube_loc.x() - half_edge_length,cube_loc.x() + half_edge_length)),
     y(interval(cube_loc.y() - half_edge_length,cube_loc.y() + half_edge_length)),
     z(interval(cube_loc.z() - half_edge_length,cube_loc.z() + half_edge_length)),
-    mat(mat){}
+    mat(mat) {
+        vec3 rvec = vec3(half_edge_length,half_edge_length,half_edge_length);
+        bbox = aabb(cube_loc + rvec, cube_loc - rvec);
+    }
 
 
     bool hit(const ray& r, interval ray_t, hit_record& rec) const override {
@@ -53,21 +56,29 @@ public:
                     intersection.max = std::fmin(ray_t.max,intersection.max);
                     if (intersection.min > intersection.max) return false;
 
+                    const bool origin_inside = x.contains(r.origin().x()) &&
+                        y.contains(r.origin().y()) &&
+                            z.contains(r.origin().z());
 
-                    rec.t = intersection.min;
+
+
+                    rec.t = origin_inside ? intersection.max : intersection.min;
                     rec.p = r.at(rec.t);
                     rec.mat = mat;
 
-                    if (x.min - 1e-9 <= rec.p.x() && rec.p.x() <= x.min + 1e-9) rec.normal = vec3(-1,0,0);
-                    if (x.max - 1e-9 <= rec.p.x() && rec.p.x() <= x.max + 1e-9) rec.normal = vec3(1,0,0);
+                    if (x.min - 1e-6 <= rec.p.x() && rec.p.x() <= x.min + 1e-6) rec.normal = vec3(-1,0,0);
+                    else if (x.max - 1e-6 <= rec.p.x() && rec.p.x() <= x.max + 1e-6) rec.normal = vec3(1,0,0);
 
-                    if (y.min - 1e-9 <= rec.p.y() && rec.p.y() <= y.min + 1e-9) rec.normal = vec3(0,-1,0);
-                    if (y.max - 1e-9 <= rec.p.y() && rec.p.y() <= y.max + 1e-9) rec.normal = vec3(0,1,0);
+                    else if (y.min - 1e-6 <= rec.p.y() && rec.p.y() <= y.min + 1e-6) rec.normal = vec3(0,-1,0);
+                    else if (y.max - 1e-6 <= rec.p.y() && rec.p.y() <= y.max + 1e-6) rec.normal = vec3(0,1,0);
 
-                    if (z.min - 1e-9 <= rec.p.z() && rec.p.z() <= z.min + 1e-9) rec.normal = vec3(0,0,-1);
-                    if (z.max - 1e-9 <= rec.p.z() && rec.p.z() <= z.max + 1e-9) rec.normal = vec3(0,0,1);
+                    else if (z.min - 1e-6 <= rec.p.z() && rec.p.z() <= z.min + 1e-6) rec.normal = vec3(0,0,-1);
+                    else if (z.max - 1e-6 <= rec.p.z() && rec.p.z() <= z.max + 1e-6) rec.normal = vec3(0,0,1);
 
                     rec.set_face_normal(r);
+
+
+                    // std::clog << rec.p << rec.normal << "\n";
 
                     return true;
                 }
@@ -80,12 +91,17 @@ public:
         return false;
     }
 
+    aabb bounding_box() const override {
+        return bbox;
+    }
+
 
 
 
 private:
     interval x, y, z;
     shared_ptr<material> mat;
+    aabb bbox;
 
 
 
