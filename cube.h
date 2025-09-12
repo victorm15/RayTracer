@@ -4,6 +4,7 @@
 #ifndef CUBE_H
 #define CUBE_H
 
+
 #include "hittable.h"
 #include "utility.h"
 

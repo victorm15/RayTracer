@@ -21,11 +21,9 @@ using std::shared_ptr;
 
 
 int main() {
-    // World
     auto start = std::chrono::high_resolution_clock::now();
     hittable_list world;
 
-    // Materials
 
     for (int a = -11; a < 11; a++) {
         for (int b = -11; b < 11; b++) {
@@ -122,7 +120,6 @@ int main() {
 
 
 
-    // Render
     world = bounding_box ? hittable_list(make_shared<bvh_node>(world)) : world;
     cam.render(world);
 

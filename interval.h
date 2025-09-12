@@ -6,6 +6,7 @@
 #define INTERVAL_H
 #include "utility.h"
 
+
 class interval {
 public:
 
