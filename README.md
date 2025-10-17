@@ -1,1 +1,1 @@
-![screenshot](Example_Image.png)
+![screenshot](Example_img.png)
