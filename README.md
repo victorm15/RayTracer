@@ -1,2 +1,7 @@
 # Raytracer
-![screenshot](example_img.png)
+
+![Main Image](example_img.png)
+
+## Features
+
+* Anti-aliasing
