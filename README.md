@@ -6,8 +6,8 @@
 
 * Anti-aliasing
 * Shapes
- * Spheres
- * Cubes
+  * Spheres
+  * Cubes
 * Different Materials
   * Diffuse/Lambertian
   * Metal (with fuzziness)
