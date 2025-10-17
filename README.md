@@ -13,5 +13,5 @@
   * Metal (with fuzziness)
   * Dielectrics
 * Defocus Blur
-* Bounding Volume Hierarchies
+* Bounding Volume Hierarchies for Axis-Aligned Bounding Boxes
 * Multithreading
