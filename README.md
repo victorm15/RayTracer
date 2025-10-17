@@ -13,5 +13,8 @@
   * Metal (with fuzziness)
   * Dielectrics
 * Defocus Blur
+* Camera Positioning
 * Bounding Volume Hierarchies for Axis-Aligned Bounding Boxes
 * Multithreading
+
+##
