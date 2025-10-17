@@ -5,6 +5,9 @@
 ## Features
 
 * Anti-aliasing
+* Shapes
+ * Spheres
+ * Cubes
 * Different Materials
   * Diffuse/Lambertian
   * Metal (with fuzziness)
