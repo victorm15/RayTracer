@@ -6,9 +6,9 @@
 
 * Anti-aliasing
 * Different Materials
-*   Diffuse/Lambertian
-*   Metal (with fuzziness)
-*   Dielectrics
+  * Diffuse/Lambertian
+  * Metal (with fuzziness)
+  * Dielectrics
 * Defocus Blur
 * Bounding Volume Hierarchies
 * Multithreading
