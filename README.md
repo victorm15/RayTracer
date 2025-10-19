@@ -8,7 +8,7 @@
 * Shapes
   * Spheres
   * Cubes
-* Different Materials
+* Materials
   * Diffuse/Lambertian
   * Metal (with fuzziness)
   * Dielectrics
