@@ -16,4 +16,5 @@ add_executable(RayTracer main.cpp
         cube.h
         material.h
         aabb.h
-        bvh.h)
+        bvh.h
+)

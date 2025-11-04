@@ -102,7 +102,7 @@ int main() {
     cam.aspect_ratio      = 16.0 / 9.0;
     cam.image_width       = 1200;
 
-    cam.antialiasing_samples = 500;
+    cam.antialiasing_samples = 50;
     cam.max_depth         = 50;
 
     cam.vertical_fov     = 20;
@@ -112,6 +112,7 @@ int main() {
 
     cam.defocus_angle = 0.6;
     cam.focus_distance    = 10;
+    cam.multithreading = true;
     bool bounding_box = true;
 
 
@@ -126,12 +127,10 @@ int main() {
 
 
     auto stop = std::chrono::high_resolution_clock::now();
-    std::chrono::duration<double, std::milli> ms = stop - start;
-
-    double seconds = ms.count() / 1000.0;
+    double ms = std::chrono::duration<double, std::milli>(stop - start).count();
 
     std::clog << std::fixed << std::setprecision(1)
-              << "Finished in " << seconds << "s\n";
+              << "Finished in " << ms << "s\n";
 
 
     return 0;
