@@ -39,5 +39,4 @@ inline std::ostream& operator<<(std::ostream& out, const ray& r) {
 }
 
 
-
 #endif //RAY_H
