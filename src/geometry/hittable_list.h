@@ -8,7 +8,7 @@
 
 #include "geometry/cube.h"
 #include "geometry/sphere.h"
-#include "acceleration/aabb.h"
+#include "bounding_volumes/aabb.h"
 
 class hittable_list: public hittable {
 public:

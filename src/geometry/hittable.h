@@ -2,7 +2,7 @@
 #define HITTABLE_H
 
 #include "core/utility.h"
-#include "acceleration/aabb.h"
+#include "bounding_volumes/aabb.h"
 
 class material;
 

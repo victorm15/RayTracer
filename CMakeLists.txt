@@ -15,8 +15,8 @@ add_executable(RayTracer
         src/geometry/sphere.h
         src/geometry/cube.h
         src/materials/material.h
-        src/acceleration/aabb.h
-        src/acceleration/bvh.h
+        src/bounding_volumes/aabb.h
+        src/bounding_volumes/bvh.h
         src/render/camera.h
 )
 

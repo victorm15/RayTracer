@@ -11,7 +11,7 @@
 #include "render/camera.h"
 #include "geometry/cube.h"
 #include "materials/material.h"
-#include "acceleration/bvh.h"
+#include "bounding_volumes/bvh.h"
 
 using std::make_shared;
 using std::shared_ptr;
