@@ -1,26 +1,19 @@
-//
-// Created by Victor on 23.08.2025.
-//
-
-
 #ifndef CAMERA_H
 #define CAMERA_H
 #include <iostream>
 #include <thread>
 
-#include "hittable.h"
-#include "utility.h"
+#include "geometry/hittable.h"
+#include "core/utility.h"
 
-
-#include "color.h"
-#include "material.h"
+#include "core/color.h"
+#include "materials/material.h"
 
 class ray;
 class hittable;
 
 class camera {
 public:
-
     double aspect_ratio = 1.0;
     int image_width = 100;
     bool antialising = true;
@@ -34,9 +27,6 @@ public:
     double focus_distance = 10;
     bool multithreading = true;
 
-
-
-
     void render(const hittable& world) {
         initalize();
 
@@ -46,10 +36,7 @@ public:
 
             int thread_number = (multithreading) ? std::thread::hardware_concurrency() : 1;
             if (thread_number > 1) {
-
                 for (int j = 0; j < image_height; j += thread_number) {
-
-
                     std::vector<std::thread> threads;
                     std::vector<std::vector<color>> rows(thread_number, std::vector<color>(image_width));
                     int c = 0;
@@ -64,8 +51,6 @@ public:
                     for (std::thread &th : threads) th.join();
                     threads.clear();
                     for (int i = 0; i < c; i ++)  write_row(std::cout, rows[i]);
-
-
                 }
             }
             else {
@@ -78,7 +63,6 @@ public:
                             color sum = color(0,0,0);
 
                             for (int i = 0; i < antialiasing_samples; i++) {
-
                                 auto ray_target = pixel_loc + random_double(-1,1) * pixel_delta_u/2 +
                                     random_double(-1,1) * pixel_delta_v/2;
 
@@ -92,7 +76,6 @@ public:
                             }
 
                             pixel_color = sum / antialiasing_samples;
-
                         }
                         else {
                             auto ray_origin = (defocus_angle > 0) ?
@@ -102,31 +85,17 @@ public:
                             pixel_color = ray_color(r, world, max_depth);
                         }
                         write_color(std::cout, pixel_color);
-
                     }
-
-
                 }
             }
-
 
             std::clog << "Done\n";
 
             std:: fclose(stdout);
-
         }
-
-
-
-
-
-
     }
 
-
 private:
-
-
     int image_height;
     point3 camera_center;
 
@@ -139,13 +108,10 @@ private:
 
     vec3 defocus_disk_u, defocus_disk_v;
 
-
     void initalize() {
-
         // Image (px)
         image_height = int(image_width / aspect_ratio);
         if (image_height < 1) {image_height = 1;}
-
 
         // Camera
         // auto focal_length = (look_at - look_from).length();
@@ -181,43 +147,29 @@ private:
         auto defocus_radius = focus_distance * std::tan(degrees_to_radians(defocus_angle)/2);
         defocus_disk_u = defocus_radius * u;
         defocus_disk_v = defocus_radius * v;
-
-
     }
 
-
-
     color ray_color(const ray& r, const hittable& world, int depth) const {
-
-
-
         if (depth <= 0) return color(1,0,0);
 
         hit_record rec;
 
-
         if (world.hit(r, interval(0.001,infinity), rec)) {
-
             ray bounced_ray;
             color attenuation;
             if (rec.mat->scatter(r,rec,attenuation,bounced_ray)) {
                 return attenuation * ray_color(bounced_ray, world, depth-1);
             }
             return color(0,0,0);
-
-
         }
 
         // Create gradient
         vec3 unit_direction = unit_vector(r.direction());
         auto a = 0.5*(unit_direction.y() + 1.0);
         return (1.0-a)*color(1.0, 1.0, 1.0) + a*color(0.5, 0.7, 1.0);
-
     }
 
-
     void prerender_row(int j, const hittable& world, std::vector<color>& row) {
-
         for (int i = 0; i < image_width; i ++) {
             auto pixel_loc = pixel00_loc + (i * pixel_delta_u) + (j * pixel_delta_v);
 
@@ -225,7 +177,6 @@ private:
                 color sum = color(0,0,0);
 
                 for (int i = 0; i < antialiasing_samples; i++) {
-
                     auto ray_target = pixel_loc + random_double(-1,1) * pixel_delta_u/2 +
                         random_double(-1,1) * pixel_delta_v/2;
 
@@ -247,19 +198,8 @@ private:
                 ray r(ray_origin,ray_direction);
                 row[i] = ray_color(r,world, max_depth);
             }
-
         }
-
-
     }
-
 };
 
 #endif //CAMERA_H
-
-
-
-
-
-
-

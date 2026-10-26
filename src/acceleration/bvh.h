@@ -1,27 +1,15 @@
-//
-// Created by Victor on 06.09.2025.
-//
-
-
 #ifndef BVH_H
 #define BVH_H
-#include "hittable.h"
-#include "hittable_list.h"
-#include "utility.h"
+#include "geometry/hittable.h"
+#include "geometry/hittable_list.h"
+#include "core/utility.h"
 
 class bvh_node: public hittable {
-
 public:
-
     bvh_node(hittable_list list): bvh_node(list.objects) {
-
     }
 
     bvh_node(std::vector<shared_ptr<hittable>>& objects) {
-
-
-
-
         int axis = random_int(0,2);
 
         if (axis == 0) quicksort_by_x(objects);
@@ -44,9 +32,6 @@ public:
         else right = make_shared<bvh_node>(v2);
 
         bbox = aabb(left->bounding_box(), right->bounding_box());
-
-
-
     }
 
     bool hit(const ray &r, interval ray_t, hit_record &rec) const override {
@@ -56,8 +41,6 @@ public:
         bool hit_right = right ? right->hit(r, hit_left ? interval(ray_t.min,rec.t) : ray_t, rec) : false;
 
         return hit_left || hit_right;
-
-
     }
 
     aabb bounding_box() const override {
@@ -78,14 +61,12 @@ public:
         int pivot = objects.size()-1;
 
         while (j != pivot) {
-
             if (objects[j]->bounding_box().x.min < objects[pivot]->bounding_box().x.min) {
                 i ++;
                 std::swap(objects[i],objects[j]);
             }
 
             j ++;
-
         }
         i ++;
         std::swap(objects[i],objects[pivot]);
@@ -107,7 +88,6 @@ public:
         v1.insert(v1.end(), v2.begin(), v2.end());
 
         objects = v1;
-
     }
 
     static void quicksort_by_y(std::vector<shared_ptr<hittable>>& objects) {
@@ -124,14 +104,12 @@ public:
         int pivot = objects.size()-1;
 
         while (j != pivot) {
-
             if (objects[j]->bounding_box().y.min < objects[pivot]->bounding_box().y.min) {
                 i ++;
                 std::swap(objects[i],objects[j]);
             }
 
             j ++;
-
         }
         i ++;
         std::swap(objects[i],objects[pivot]);
@@ -153,7 +131,6 @@ public:
         v1.insert(v1.end(), v2.begin(), v2.end());
 
         objects = v1;
-
     }
 
     static void quicksort_by_z(std::vector<shared_ptr<hittable>>& objects) {
@@ -170,14 +147,12 @@ public:
         int pivot = objects.size()-1;
 
         while (j != pivot) {
-
             if (objects[j]->bounding_box().z.min < objects[pivot]->bounding_box().z.min) {
                 i ++;
                 std::swap(objects[i],objects[j]);
             }
 
             j ++;
-
         }
         i ++;
         std::swap(objects[i],objects[pivot]);
@@ -199,23 +174,11 @@ public:
         v1.insert(v1.end(), v2.begin(), v2.end());
 
         objects = v1;
-
     }
-
-
-
 
 private:
     shared_ptr<hittable> left, right;
     aabb bbox;
-
 };
-
-
-
-
-
-
-
 
 #endif //BVH_H

@@ -1,14 +1,9 @@
-//
-// Created by Victor on 31.07.2025.
-//
-
 #ifndef COLOR_H
 #define COLOR_H
 
-
-#include "interval.h"
-#include "utility.h"
-#include "vec3.h"
+#include "core/interval.h"
+#include "core/utility.h"
+#include "core/vec3.h"
 
 using color = vec3;
 
@@ -36,14 +31,10 @@ void write_color(std::ostream& out, const color& pixel_color) {
 
     // print color components
     out << rbyte << " " << gbyte << " " << bbyte << "\n";
-
 }
 
 void write_row(std::ostream& out, const std::vector<color>& row) {
     for (auto& px : row) write_color(out, px);
-
 }
-
-
 
 #endif //COLOR_H

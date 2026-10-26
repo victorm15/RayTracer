@@ -1,10 +1,5 @@
-//
-// Created by Victor on 18.08.2025.
-//
-
 #ifndef UTILITY_H
 #define UTILITY_H
-
 
 #include <cmath>
 #include <iostream>
@@ -27,8 +22,6 @@ inline double random_double() {
     return std::rand() / (RAND_MAX + 1.0);
 }
 
-
-
 inline double random_double(double min, double max) {
     return min + (max-min) * random_double();
 }
@@ -37,13 +30,9 @@ inline int random_int(int min, int max) {
     return int(random_double(min, max + 1));
 }
 
-
-#include "color.h"
-#include "ray.h"
-#include "vec3.h"
-#include "interval.h"
-
-
-
+#include "core/color.h"
+#include "core/ray.h"
+#include "core/vec3.h"
+#include "core/interval.h"
 
 #endif //UTILITY_H

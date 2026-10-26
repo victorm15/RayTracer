@@ -1,15 +1,9 @@
-//
-// Created by Victor on 18.08.2025.
-//
-
 #ifndef INTERVAL_H
 #define INTERVAL_H
-#include "utility.h"
-
+#include "core/utility.h"
 
 class interval {
 public:
-
     // Min and max values
     double min;
 
@@ -24,14 +18,11 @@ public:
 
         this->min = min;
         this->max = max;
-
     }
 
     interval(const interval& a, const interval& b) {
-
         this->min = std::fmin(a.min,b.min);
         this->max = std::fmax(a.max,b.max);
-
     }
 
     double size() const {
@@ -73,12 +64,7 @@ public:
         }
 
         return false;
-
     }
-
-
-
-
 };
 
 const interval interval::empty = interval(+infinity,-infinity);

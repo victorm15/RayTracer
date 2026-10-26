@@ -1,29 +1,24 @@
-#include "utility.h"
+#include "core/utility.h"
 
 #include <memory>
 #include <vector>
 #include <chrono>
 #include <iomanip>
 
-
-#include "hittable.h"
-#include "hittable_list.h"
-#include "sphere.h"
-#include "camera.h"
-#include "cube.h"
-#include "material.h"
-#include "bvh.h"
-
-
+#include "geometry/hittable.h"
+#include "geometry/hittable_list.h"
+#include "geometry/sphere.h"
+#include "render/camera.h"
+#include "geometry/cube.h"
+#include "materials/material.h"
+#include "acceleration/bvh.h"
 
 using std::make_shared;
 using std::shared_ptr;
 
-
 int main() {
     auto start = std::chrono::high_resolution_clock::now();
     hittable_list world;
-
 
     for (int a = -11; a < 11; a++) {
         for (int b = -11; b < 11; b++) {
@@ -68,13 +63,7 @@ int main() {
                         random_material = make_shared<dielectric>(1.5);
                         world.add(make_shared<cube>(center + vec3(0,-0.04,0), 0.16, random_material));
                     }
-
                 }
-
-
-
-
-
             }
         }
     }
@@ -82,20 +71,15 @@ int main() {
     auto ground_material = make_shared<lambertian>(color(0.5, 0.5, 0.5));
     world.add(make_shared<sphere>(point3(0,-1000,0), 1000, ground_material));
 
-
-
     auto material1 = make_shared<dielectric>(1.5);
     auto material2 = make_shared<lambertian>(color(0.4, 0.2, 0.1));
     auto material3 = make_shared<metal>(color(0.7, 0.6, 0.5), 0.05);
-
 
     world.add(make_shared<sphere>(point3(-4, 1, 0), 1.0, material2));
 
     world.add(make_shared<sphere>(point3(0, 1, 0), 1.0, material1));
 
-
     world.add(make_shared<cube>(point3(4, 0.7, 0), 0.7, material3));
-
 
     camera cam;
 
@@ -115,16 +99,8 @@ int main() {
     cam.multithreading = true;
     bool bounding_box = true;
 
-
-
-
-
-
-
     world = bounding_box ? hittable_list(make_shared<bvh_node>(world)) : world;
     cam.render(world);
-
-
 
     auto stop = std::chrono::high_resolution_clock::now();
     double ms = std::chrono::duration<double, std::milli>(stop - start).count();
@@ -132,15 +108,5 @@ int main() {
     std::clog << std::fixed << std::setprecision(1)
               << "Finished in " << ms << "s\n";
 
-
     return 0;
 }
-
-
-
-
-
-
-
-
-

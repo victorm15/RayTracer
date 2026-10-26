@@ -1,6 +1,6 @@
 # Raytracer
 
-![Main Image](example_img.png)
+![Main Image](docs/example_img.png)
 
 ## Features
 

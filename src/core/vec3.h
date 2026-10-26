@@ -1,11 +1,7 @@
-//
-// Created by Victor on 31.07.2025.
-//
-
 #ifndef VEC3_H
 #define VEC3_H
 
-#include "utility.h"
+#include "core/utility.h"
 
 class vec3 {
 public:
@@ -70,9 +66,6 @@ public:
         double length() const {
                 return std::sqrt(length_squared());
         }
-
-
-
 };
 
 // alias for points
@@ -135,15 +128,10 @@ inline vec3 random_on_hemisphere(const vec3& normal) {
         vec3 vec = random_unit_vec();
         if (dot(normal,vec)>0) return vec;
         return -vec;
-
 }
-
-
 
 inline vec3 reflect(const vec3& normal, const vec3& v) {
         return v - 2 * (normal * (dot(normal,v)));
-
-
 }
 
 inline vec3 refract(double eta_i_over_eta_r, const vec3& normal, const vec3& v) {
@@ -151,10 +139,6 @@ inline vec3 refract(double eta_i_over_eta_r, const vec3& normal, const vec3& v) 
         vec3 R_perpendicular = eta_i_over_eta_r * (v + v.length() * cos_theta * normal);
         vec3 R_parallel = - std::sqrt(std::fabs(1 - R_perpendicular.length_squared())) * normal;
         return R_perpendicular + R_parallel;
-
-
 }
-
-
 
 #endif //VEC3_H

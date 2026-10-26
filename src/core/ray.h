@@ -1,17 +1,10 @@
-//
-// Created by Victor on 31.07.2025.
-//
-
 #ifndef RAY_H
 #define RAY_H
 
-#include "vec3.h"
+#include "core/vec3.h"
 
 class ray {
-
-
 public:
-
     // constructors
     ray() {}
 
@@ -23,7 +16,6 @@ public:
 
     const vec3& direction() const {return dir;}
 
-
     point3 at(double t) const {
         return orig + t*dir;
     }
@@ -32,11 +24,9 @@ private:
     // attributes
     point3 orig;
     vec3 dir;
-
 };
 inline std::ostream& operator<<(std::ostream& out, const ray& r) {
     return out << "Origin: " << r.origin() << " Direction: " << r.direction();
 }
-
 
 #endif //RAY_H

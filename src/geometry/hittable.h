@@ -1,13 +1,8 @@
-//
-// Created by Victor on 01.08.2025.
-//
-
 #ifndef HITTABLE_H
 #define HITTABLE_H
 
-
-#include "utility.h"
-#include "aabb.h"
+#include "core/utility.h"
+#include "acceleration/aabb.h"
 
 class material;
 
@@ -23,7 +18,6 @@ public:
         if (dot(normal,r.direction()) > 0) {
             front_face = false;
             normal = - normal;
-
         }
         else {
             front_face = true;
@@ -31,23 +25,13 @@ public:
     }
 };
 
-
 class hittable {
 public:
-
     virtual ~hittable() = default;
 
     virtual bool hit(const ray& r, interval ray_t , hit_record& rec) const = 0;
 
     virtual aabb bounding_box() const = 0;
-
-
-
 };
-
-
-
-
-
 
 #endif //HITTABLE_H

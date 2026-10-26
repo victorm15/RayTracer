@@ -1,23 +1,17 @@
-//
-// Created by Victor on 17.08.2025.
-//
-
 #ifndef HITTABLE_LIST_H
 #define HITTABLE_LIST_H
 
-
-#include "hittable.h"
-#include "utility.h"
+#include "geometry/hittable.h"
+#include "core/utility.h"
 
 #include <vector>
 
-#include "cube.h"
-#include "sphere.h"
-#include "aabb.h"
+#include "geometry/cube.h"
+#include "geometry/sphere.h"
+#include "acceleration/aabb.h"
 
 class hittable_list: public hittable {
 public:
-
     // Vector of hittable objects
     std::vector<shared_ptr<hittable>> objects;
 
@@ -33,7 +27,6 @@ public:
     }
 
     bool hit(const ray& r, interval ray_t, hit_record& rec) const override {
-
         bool hit_anything = false;
         hit_record temp_rec;
         double closest_t = ray_t.max;
@@ -46,27 +39,14 @@ public:
                     closest_t = rec.t;
                 }
             }
-
         }
 
-
         return hit_anything;
-
-
-
     }
 
     aabb bounding_box() const override {return bbox;}
 private:
     aabb bbox;
 };
-
-
-
-
-
-
-
-
 
 #endif //HITTABLE_LIST_H

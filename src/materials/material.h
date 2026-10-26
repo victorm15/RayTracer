@@ -1,13 +1,8 @@
-//
-// Created by Victor on 26.08.2025.
-//
-
 #ifndef MATERIAL_H
 #define MATERIAL_H
 
-#include "hittable.h"
-#include "utility.h"
-
+#include "geometry/hittable.h"
+#include "core/utility.h"
 
 class material {
 public:
@@ -20,7 +15,6 @@ public:
 
 class lambertian: public material {
 public:
-
     lambertian(const color& albedo): albedo(albedo) {}
 
     bool scatter(const ray& r_in, const hit_record& rec, color& attenuation, ray& scattered) const override {
@@ -34,12 +28,10 @@ public:
         attenuation = albedo;
 
         return true;
-
     }
 
 private:
     color albedo;
-
 };
 
 class metal: public material {
@@ -48,9 +40,6 @@ public:
     metal(const color& albedo, const double fuzz): albedo(albedo), fuzz(fuzz) {}
 
     bool scatter(const ray& r_in, const hit_record& rec, color& attenuation, ray& scattered) const override {
-
-
-
         auto scatter_direction = reflect(rec.normal, r_in.direction());
 
         scattered = ray(rec.p, unit_vector(scatter_direction) + (fuzz * random_unit_vec()));
@@ -58,12 +47,10 @@ public:
         return (dot(rec.normal,scattered.direction())>0);
     }
 
-
 private:
     color albedo;
     double fuzz;
 };
-
 
 class dielectric: public material {
 public:
@@ -85,17 +72,10 @@ public:
 
         scattered = ray(rec.p, scatter_direction);
 
-
-
-
-
         return true;
 
         // || reflectance(cos_theta, refractive_index) > random_double()
     }
-
-
-
 
 private:
     double refractive_index;
@@ -104,14 +84,7 @@ private:
         auto r0 = (1 - refractive_index) / (1 + refractive_index);
         r0 = r0 * r0;
         return r0 + ((1 - r0) * std::pow((1-cosine),5));
-
     }
-
-
 };
-
-
-
-
 
 #endif //MATERIAL_H

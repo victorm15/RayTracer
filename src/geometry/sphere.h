@@ -1,7 +1,4 @@
-//
-// Created by Victor on 18.08.2025.
-//
-#include "utility.h"
+#include "core/utility.h"
 #ifndef SPHERE_H
 #define SPHERE_H
 
@@ -9,8 +6,6 @@ using std::shared_ptr;
 
 class sphere: public hittable {
 public:
-
-
     // Constructor
     sphere(const point3& sphere_loc, double sphere_radius, shared_ptr<material> mat):
     sphere_loc(sphere_loc), sphere_radius(std::fmax(0,sphere_radius)), mat(mat) {
@@ -20,11 +15,7 @@ public:
 
     // Hit function
 
-
     bool hit(const ray& r, interval ray_t, hit_record& rec) const override {
-
-
-
         auto dir = r.direction();
         auto orig = r.origin();
 
@@ -60,7 +51,6 @@ public:
             return true;
         }
         return false;
-
     }
     aabb bounding_box() const override {
         return bbox;
@@ -71,11 +61,6 @@ private:
     double sphere_radius;
     shared_ptr<material> mat;
     aabb bbox;
-
-
-
 };
-
-
 
 #endif //SPHERE_H
